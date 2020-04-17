@@ -1,0 +1,29 @@
+name: HeadZ
+version: 1.1 BETA
+main: nl.tabuu.headz.HeadZ
+description: Simple head plugin.
+author: Tabuu
+authors: [Tabuu]
+website: https://www.tabuu.nl
+depend: [TabuuCore]
+api-version: 1.13
+
+commands:
+  headz:
+    usage: /<command>
+    description: Opens the head selector GUI.
+    permission: headz.menu
+    aliases: [head]
+
+  headz update:
+    usage: /<command> <category>
+    description: Updates the database
+    permission: headz.update
+
+permissions:
+  headz.menu:
+    description: Allows users to open the head selector.
+    default: true
+  headz.update:
+    description: Allows users to update the database.
+    default: op

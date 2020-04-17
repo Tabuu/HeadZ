@@ -1,0 +1,32 @@
+Category:
+  # DESCRIPTION:  Category display material.
+  # FORMAT:       TabuuCore SafeMaterial (http://tabuucore.tabuu.nl/javadoc/nl/tabuu/tabuucore/material/SafeMaterial.html)
+  ALPHABET:
+    DisplayItem: 'WRITABLE_BOOK'
+
+  ANIMALS:
+    DisplayItem: 'CHICKEN_SPAWN_EGG'
+
+  BLOCKS:
+    DisplayItem: 'BRICKS'
+
+  DECORATION:
+    DisplayItem: 'PAINTING'
+
+  FOOD_AND_DRINKS:
+    DisplayItem: 'COOKED_BEEF'
+
+  HUMANS:
+    DisplayItem: 'PLAYER_HEAD'
+
+  HUMANOID:
+    DisplayItem: 'SKELETON_SKULL'
+
+  MISCELLANEOUS:
+    DisplayItem: 'LAVA_BUCKET'
+
+  MONSTERS:
+    DisplayItem: 'CREEPER_HEAD'
+
+  PLANTS:
+    DisplayItem: 'PEONY'
