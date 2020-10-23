@@ -4,31 +4,35 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import nl.tabuu.headz.HeadZ;
-import org.bukkit.Bukkit;
+import nl.tabuu.tabuucore.configuration.IDataHolder;
+import nl.tabuu.tabuucore.serialization.ISerializable;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class HeadDatabase implements Serializable {
-
-    private static final long serialVersionUID = 4232489724376L;
+public class HeadDatabase implements ISerializable<IDataHolder> {
 
     private Gson _gson;
     private Set<Head> _heads;
 
-    public HeadDatabase() {
-        _heads = new HashSet<>();
+    public HeadDatabase(Collection<Head> heads) {
+        _heads = new HashSet<>(heads);
         _gson = new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
                 .registerTypeAdapter(Head.class, new Head.Deserializer())
                 .create();
+    }
+
+    public HeadDatabase() {
+        this(new HashSet<>());
+    }
+
+    public HeadDatabase(IDataHolder data) {
+        this(data.getSerializableList("Heads", Head.class));
     }
 
     public Collection<Head> getHeads() {
@@ -100,17 +104,13 @@ public class HeadDatabase implements Serializable {
             return scanner.hasNext() ? scanner.next() : "";
         } catch (IOException e) {
             HeadZ.getInstance().getLogger().severe("Could not update database!");
-            Bukkit.broadcastMessage(urlString);
             return "";
         }
     }
 
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        out.writeObject(_heads);
-    }
-
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        _heads = (Set<Head>) in.readObject();
-        _gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().registerTypeAdapter(Head.class, new Head.Deserializer()).create();
+    @Override
+    public IDataHolder serialize(IDataHolder data) {
+        data.setSerializableList("Heads", new ArrayList<>(_heads));
+        return data;
     }
 }

@@ -31,14 +31,14 @@ public class CategorySelector extends InventoryFormUI {
         super("", InventorySize.FIVE_ROWS);
 
         _local = HeadZ.getInstance().getLocal();
-        _config = HeadZ.getInstance().getConfigurationManager().getConfiguration("config");
+        _config = HeadZ.getInstance().getConfiguration();
 
         setTitle(_local.translate("CATEGORY_SELECTOR_UI_TITLE"));
         reload();
     }
 
     @Override
-    protected void draw() {
+    protected void onDraw() {
         //region pallet
         ItemBuilder
                 black = new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE)
@@ -66,7 +66,7 @@ public class CategorySelector extends InventoryFormUI {
 
         int[] slots = new int[]{10, 11, 12, 13, 14, 15, 16, 21, 22, 23};
         for (HeadCategory category : HeadCategory.values()) {
-            XMaterial material = _config.getEnum(XMaterial.class, "Category." + category.name() + ".DisplayItem");
+            XMaterial material = _config.get("Category." + category.name() + ".DisplayItem", XMaterial::valueOf, XMaterial.BARRIER);
             ItemBuilder displayItem = new ItemBuilder(material)
                     .setDisplayName(_local.translate("CATEGORY_SELECTOR_UI_CATEGORY_" + category.name()));
 
@@ -78,7 +78,7 @@ public class CategorySelector extends InventoryFormUI {
 
             setElement(position, button);
         }
-        super.draw();
+        super.onDraw();
     }
 
     private void searchHead(Player player, String string) {

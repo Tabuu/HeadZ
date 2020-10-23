@@ -51,7 +51,7 @@ public class HeadSelector extends InventoryFormUI {
     }
 
     @Override
-    protected void draw() {
+    protected void onDraw() {
         //region pallet
         ItemBuilder
                 black = new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE)
@@ -132,7 +132,7 @@ public class HeadSelector extends InventoryFormUI {
             setElement(position, itemButton);
         }
 
-        super.draw();
+        super.onDraw();
     }
 
     public int getPage() {
@@ -149,7 +149,7 @@ public class HeadSelector extends InventoryFormUI {
         _page++;
         setTitle(_local.translate("HEAD_SELECTOR_UI_TITLE", getReplacements()));
         reload();
-        draw();
+        onDraw();
     }
 
     private void previousPage() {
@@ -158,7 +158,7 @@ public class HeadSelector extends InventoryFormUI {
         _page--;
         setTitle(_local.translate("HEAD_SELECTOR_UI_TITLE", getReplacements()));
         reload();
-        draw();
+        onDraw();
     }
 
     private void searchHead(Player player, String string) {
@@ -172,10 +172,10 @@ public class HeadSelector extends InventoryFormUI {
         Bukkit.getScheduler().runTask(HeadZ.getInstance(), () -> selector.open(player));
     }
 
-    public String[] getReplacements() {
-        return new String[] {
-                "{PAGE}", String.format("%s", getPage() + 1),
-                "{PAGE_COUNT}", String.format("%s", getPageCount() + 1)
+    public Object[] getReplacements() {
+        return new Object[] {
+                "{PAGE}", getPage() + 1,
+                "{PAGE_COUNT}", getPageCount() + 1
         };
     }
 

@@ -6,52 +6,57 @@ import com.google.gson.annotations.SerializedName;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
+import nl.tabuu.tabuucore.configuration.IDataHolder;
 import nl.tabuu.tabuucore.material.XMaterial;
+import nl.tabuu.tabuucore.serialization.ISerializable;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-public class Head implements Serializable {
-
-    private static final long serialVersionUID = 4232489724376L;
+public class Head implements ISerializable<IDataHolder> {
 
     @Expose
     @SerializedName("name")
-    String _name;
+    private String _name;
 
     @Expose
     @SerializedName("value")
     private String _textureValue;
 
     private ItemStack _item;
-    private List<String> _tags;
+    private HashSet<String> _tags;
     private HeadCategory _category;
 
-    public Head(String name, HeadCategory category, String value, String... tags){
-       _name = name;
-       _textureValue = value;
-       _tags = Arrays.asList(tags);
-       _category = category;
+    public Head(String name, HeadCategory category, String value, Collection<String> tags) {
+        _name = name;
+        _category = category;
+        _textureValue = value;
+        _tags = new HashSet<>(tags);
 
-       _item = null;
+        _item = null;
     }
 
-    public ItemStack getItemStack(){
-        if(_item != null)
+    public Head(IDataHolder data) {
+        this(
+                data.getString("Name"),
+                data.get("Category", HeadCategory::valueOf),
+                data.getString("TextureValue"),
+                data.getStringList("Tags")
+        );
+    }
+
+    public ItemStack getItemStack() {
+        if (_item != null)
             return _item;
 
-        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+        GameProfile profile = new GameProfile(UUID.randomUUID(), "Tabuu");
         PropertyMap propertyMap = profile.getProperties();
 
-        if(propertyMap == null)
+        if (propertyMap == null)
             throw new IllegalStateException("Could not find property map.");
 
         propertyMap.put("textures", new Property("textures", _textureValue));
@@ -63,7 +68,7 @@ public class Head implements Serializable {
             Field profileField = headMetaClass.getDeclaredField("profile");
             profileField.setAccessible(true);
             profileField.set(headMeta, profile);
-        } catch (NoSuchFieldException | IllegalAccessException ignore) {}
+        } catch (NoSuchFieldException | IllegalAccessException ignore) { }
 
         headMeta.setDisplayName(ChatColor.RESET + _name);
         head.setItemMeta(headMeta);
@@ -71,24 +76,33 @@ public class Head implements Serializable {
         return head;
     }
 
-    public String getName(){
+    public String getName() {
         return _name;
     }
 
-    public List<String> getTags(){
+    public Set<String> getTags() {
         return _tags;
     }
 
-    public HeadCategory getCategory(){
+    public HeadCategory getCategory() {
         return _category;
     }
 
-    public String getTextureValue(){
+    public String getTextureValue() {
         return _textureValue;
     }
 
-    public void setCategory(HeadCategory category){
+    public void setCategory(HeadCategory category) {
         _category = category;
+    }
+
+    @Override
+    public IDataHolder serialize(IDataHolder data) {
+        data.set("Name", _name);
+        data.set("Category", _category, HeadCategory::toString);
+        data.set("TextureValue", _textureValue);
+        data.setStringList("Tags", new ArrayList<>(_tags));
+        return data;
     }
 
     static class Deserializer implements JsonDeserializer<Head> {
@@ -100,8 +114,12 @@ public class Head implements Serializable {
             JsonElement element = headObject.get("tags");
             Head head = gson.fromJson(headObject, Head.class);
 
-            head._tags = element.isJsonNull() ? Collections.emptyList() :
-                                                Arrays.asList(element.getAsString().split(","));
+            head._tags = new HashSet<>(
+                    element.isJsonNull() ?
+                            Collections.emptySet() :
+                            Arrays.asList(element.getAsString().split(","))
+            );
+
             return head;
         }
     }

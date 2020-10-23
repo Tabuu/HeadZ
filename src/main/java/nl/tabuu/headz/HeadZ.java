@@ -3,27 +3,32 @@ package nl.tabuu.headz;
 import nl.tabuu.headz.commands.HeadZCommand;
 import nl.tabuu.headz.data.HeadDatabase;
 import nl.tabuu.headz.metric.Metrics;
+import nl.tabuu.tabuucore.configuration.IConfiguration;
+import nl.tabuu.tabuucore.configuration.file.JsonConfiguration;
+import nl.tabuu.tabuucore.configuration.file.YamlConfiguration;
 import nl.tabuu.tabuucore.plugin.TabuuCorePlugin;
 import nl.tabuu.tabuucore.util.Dictionary;
 
-import java.io.*;
+import java.util.function.Supplier;
 
 public class HeadZ extends TabuuCorePlugin {
 
     private static HeadZ INSTANCE;
 
-    private HeadDatabase _database;
     private Dictionary _local;
+    private HeadDatabase _database;
+    private IConfiguration _config, _data;
 
     @Override
     public void onEnable(){
         INSTANCE = this;
 
         _database = new HeadDatabase();
-        _local = getConfigurationManager().addConfiguration("lang").getDictionary("");
-        getConfigurationManager().addConfiguration("config");
+        _local = getConfigurationManager().addConfiguration("lang.yml", YamlConfiguration.class).getDictionary("");
+        _data = getConfigurationManager().addConfiguration("data.json", JsonConfiguration.class);
+        _config = getConfigurationManager().addConfiguration("config.yml", YamlConfiguration.class);
 
-        load(new File(this.getDataFolder(), "head.db"));
+        _database = load();
 
         getCommand("headz").setExecutor(new HeadZCommand());
 
@@ -33,29 +38,21 @@ public class HeadZ extends TabuuCorePlugin {
 
     @Override
     public void onDisable(){
-        save(new File(this.getDataFolder(), "head.db"));
+        save();
         getInstance().getLogger().info("HeadZ is now disabled.");
     }
 
-    private void save(File file){
-        try (FileOutputStream fileOutputStream = new FileOutputStream(file);
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)){
-
-            objectOutputStream.writeObject(_database);
-        } catch (IOException exception){
-            exception.printStackTrace();
-            getLogger().severe("Could not save data!");
-        }
+    private void save() {
+        _data.set("", _database);
+        _data.save();
     }
 
-    private void load(File file){
-        try (FileInputStream fileInputStream = new FileInputStream(file);
-             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+    public IConfiguration getConfiguration() {
+        return _config;
+    }
 
-            _database = (HeadDatabase) objectInputStream.readObject();
-        } catch (IOException | ClassNotFoundException exception) {
-            getLogger().warning("No data found!");
-        }
+    private HeadDatabase load() {
+        return _data.getSerializable("", HeadDatabase.class, (Supplier<HeadDatabase>) HeadDatabase::new);
     }
 
     public Dictionary getLocal(){
