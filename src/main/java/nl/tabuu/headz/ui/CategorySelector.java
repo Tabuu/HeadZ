@@ -24,8 +24,8 @@ import java.util.List;
 
 public class CategorySelector extends InventoryFormUI {
 
-    private Dictionary _local;
-    private IConfiguration _config;
+    private final Dictionary _local;
+    private final IConfiguration _config;
 
     public CategorySelector() {
         super("", InventorySize.FIVE_ROWS);
@@ -61,7 +61,7 @@ public class CategorySelector extends InventoryFormUI {
                 XMaterial.NAME_TAG.parseItem(),
                 _local.translate("CATEGORY_SELECTOR_UI_SEARCH_PLACEHOLDER"));
 
-        TextInput searchInput = new TextInput(searchInputStyle, this, this::searchHead);
+        TextInput searchInput = new TextInput(searchInputStyle, null, this::searchHead);
         setElement(new Vector2f(4, 3), searchInput);
 
         int[] slots = new int[]{10, 11, 12, 13, 14, 15, 16, 21, 22, 23};

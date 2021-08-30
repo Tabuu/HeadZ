@@ -21,13 +21,13 @@ public class Head implements ISerializable<IDataHolder> {
 
     @Expose
     @SerializedName("name")
-    private String _name;
+    private final String _name;
 
     @Expose
     @SerializedName("value")
-    private String _textureValue;
+    private final String _textureValue;
 
-    private ItemStack _item;
+    private final ItemStack _item;
     private HashSet<String> _tags;
     private HeadCategory _category;
 

@@ -34,6 +34,10 @@ public class HeadZCommand extends Command {
     @Override
     protected CommandResult onCommand(CommandSender commandSender, List<Optional<?>> list) {
         Player player = (Player) commandSender;
+
+        if (HeadZ.getInstance().getDatabase().getHeads().isEmpty())
+            _local.send(player, "WARNING_EMPTY_DATABASE");
+
         new CategorySelector().open(player);
 
         return CommandResult.SUCCESS;

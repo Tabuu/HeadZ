@@ -1,3 +1,8 @@
+# DESCRIPTION: Warning messages
+WARNING_EMPTY_DATABASE: "&cDatabase empty... Please use '/headz update' to update database."
+
+
+
 # DESCRIPTION: Update command related text
 UPDATE_COMPLETE: "&2&lUpdate completed."
 

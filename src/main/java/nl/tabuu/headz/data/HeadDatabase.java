@@ -39,50 +39,26 @@ public class HeadDatabase implements ISerializable<IDataHolder> {
         return _heads;
     }
 
+    public static List<Head> findAndSortHeads(Collection<Head> heads, String... keywords) {
+        List<Head> list = new ArrayList<>(heads);
+        list.sort(getComparator(keywords));
+        return list;
+    }
+
+    public List<Head> find(Collection<Head> heads, String... keywords) {
+        return findAndSortHeads(heads, keywords);
+    }
+
     public List<Head> find(HeadCategory category) {
         return _heads.stream().filter(head -> head.getCategory().equals(category)).collect(Collectors.toList());
     }
 
-
     public List<Head> find(String... keywords) {
-        Map<Head, Short> scores = new HashMap<>();
-        List<String> keys = Arrays.stream(keywords)
-                .map(String::toUpperCase)
-                .collect(Collectors.toList());
-
-        for (Head head : _heads) {
-            short score = 0;
-            List<String> name = Arrays.stream(head.getName().split(" "))
-                    .map(String::toUpperCase)
-                    .collect(Collectors.toList());
-
-            if (String.join(" ", keys).equalsIgnoreCase(String.join(" ", name)))
-                score += 50;
-
-            for (String key : keys) {
-                for (String namePart : name) {
-                    if (namePart.equals(key)) score += 10;
-                    else if (namePart.contains(key)) score += 1;
-                }
-
-                for (String tag : head.getTags())
-                    if (key.equalsIgnoreCase(tag)) score += 5;
-            }
-            scores.put(head, score);
-        }
-
-        List<Map.Entry<Head, Short>> entries = new ArrayList<>(scores.entrySet());
-        entries.sort(Map.Entry.comparingByValue());
-        Collections.reverse(entries);
-
-        return entries.stream()
-                .filter(entry -> entry.getValue() > 0)
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
+        return find(_heads, keywords);
     }
 
     public List<Head> find(HeadCategory category, String... keywords) {
-        return find(keywords).stream().filter(head -> head.getCategory().equals(category)).collect(Collectors.toList());
+        return findAndSortHeads(find(category), keywords);
     }
 
     public void update(HeadCategory category) {
@@ -112,5 +88,47 @@ public class HeadDatabase implements ISerializable<IDataHolder> {
     public IDataHolder serialize(IDataHolder data) {
         data.setSerializableList("Heads", new ArrayList<>(_heads));
         return data;
+    }
+
+    public static Comparator<Head> getComparator(String... keywords) {
+        return (head, other) -> -1 * Float.compare(getSimilarityScore(head, keywords), getSimilarityScore(other, keywords));
+    }
+
+    private static final float
+            NAME_MATCH_WEIGHT = .6f,
+            TAGS_MATCH_WEIGHT = .4f;
+
+
+    private static float getSimilarityScore(Head head, String... keywords) {
+        float score = 0;
+
+        String name = head.getName().toLowerCase();
+        String fullQuery = String.join(" ", keywords).toLowerCase();
+
+        List<String> nameParts = Arrays.stream(name.split(" "))
+                .map(String::toLowerCase)
+                .collect(Collectors.toList());
+
+        // Checking for name match.
+        if (!fullQuery.equals(head.getName())) {
+            float namePartWorth = NAME_MATCH_WEIGHT / Math.max(keywords.length, nameParts.size());
+            for (String namePart : nameParts)
+                for (String keyword : keywords)
+                    if (keyword.equals(namePart) || (namePart.length() * 1.5f > keyword.length() && namePart.contains(keyword)))
+                        score += namePartWorth;
+        } else score += NAME_MATCH_WEIGHT;
+
+        // Checking for tag match.
+        float tagWorth = TAGS_MATCH_WEIGHT / head.getTags().size();
+        for (String tag : head.getTags()) {
+            tag = tag.toLowerCase();
+
+            for (String keyword : keywords) {
+                if (tag.equals(keyword))
+                    score += tagWorth;
+            }
+        }
+
+        return score;
     }
 }

@@ -24,8 +24,8 @@ import java.util.List;
 
 public class HeadSelector extends InventoryFormUI {
 
-    private List<Head> _heads;
-    private Dictionary _local;
+    private final List<Head> _heads;
+    private final Dictionary _local;
     private int _page;
     private final int _content;
     private final int _pageMax;
@@ -96,7 +96,7 @@ public class HeadSelector extends InventoryFormUI {
         Element previousButton = new Button(previousButtonStyle, this::onPreviousButtonClick),
                 nextButton = new Button(nextButtonStyle, this::onNextButtonClick),
                 exitButton = new Button(exitButtonStyle, this::onExitButtonClick),
-                searchButton = new TextInput(headSearchInputStyle, this, this::searchHead);
+                searchButton = new TextInput(headSearchInputStyle, null, this::searchHead);
 
         setElement(new Vector2f(3, 5), previousButton);
         setElement(new Vector2f(4, 5), exitButton);
