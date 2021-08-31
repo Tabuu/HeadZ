@@ -61,17 +61,27 @@ public class HeadDatabase implements ISerializable<IDataHolder> {
         return findAndSortHeads(find(category), keywords);
     }
 
-    public void update(HeadCategory category) {
-        _heads.removeIf(h -> h.getCategory() == null);
-        _heads.removeIf(h -> h.getCategory().equals(category));
-
+    /**
+     * Updates the specified category, and returns the amount of newly found heads.
+     * @param category The category to update.
+     * @return The amount of newly found heads.
+     */
+    public int update(HeadCategory category) {
         String json = jsonFromURL(category.getURL());
+        List<Head> heads = _gson.fromJson(json, new TypeToken<ArrayList<Head>>() {
+        }.getType());
 
-        Type type = new TypeToken<ArrayList<Head>>() {
-        }.getType();
-        List<Head> heads = _gson.fromJson(json, type);
-        heads.forEach(head -> head.setCategory(category));
-        _heads.addAll(heads);
+        int newCounter = 0;
+        for (Head head : heads) {
+            head.setCategory(category);
+            if (_heads.add(head))
+                newCounter++;
+        }
+
+        // Cleanup in case of shenanigans.
+        _heads.removeIf(h -> h.getCategory() == null); // In case of shenanigans.
+
+        return newCounter;
     }
 
     private String jsonFromURL(String urlString) {
@@ -114,7 +124,7 @@ public class HeadDatabase implements ISerializable<IDataHolder> {
             float namePartWorth = NAME_MATCH_WEIGHT / Math.max(keywords.length, nameParts.size());
             for (String namePart : nameParts)
                 for (String keyword : keywords)
-                    if (keyword.equals(namePart) || (namePart.length() * 1.5f > keyword.length() && namePart.contains(keyword)))
+                    if (keyword.equals(namePart) || (namePart.length() * 1.5f < keyword.length() && namePart.contains(keyword)))
                         score += namePartWorth;
         } else score += NAME_MATCH_WEIGHT;
 

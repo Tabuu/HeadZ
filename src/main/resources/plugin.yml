@@ -1,7 +1,7 @@
 name: HeadZ
-version: 1.0
+version: 1.2.0
 main: nl.tabuu.headz.HeadZ
-description: Simple head plugin.
+description: The Free Head Database.
 author: Tabuu
 authors: [Tabuu]
 website: https://www.tabuu.nl

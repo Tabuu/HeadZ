@@ -1,25 +1,30 @@
 # DESCRIPTION: Warning messages
-WARNING_EMPTY_DATABASE: "&cDatabase empty... Please use '/headz update' to update database."
-
+WARNING_EMPTY_DATABASE: "&cDatabase empty... Please use '[&c&n/headz update](show_text=Click to run command.,run_command=/headz update)&c' to update database."
 
 
 # DESCRIPTION: Update command related text
-UPDATE_COMPLETE: "&2&lUpdate completed."
+UPDATE_STARTED: "&aUpdate started. This might take a while."
+UPDATE_COMPLETE_CATEGORY: "&aCategory {CATEGORY} has been updated ({NEW_COUNT} new head(s) found)."
+UPDATE_COMPLETE: "&aUpdate completed."
+
+
+# DESCRIPTION: Category related text.
+CATEGORY_ALPHABET: "Alphabet"
+CATEGORY_ANIMALS: "Animals"
+CATEGORY_BLOCKS: "Blocks"
+CATEGORY_DECORATION: "Decoration"
+CATEGORY_FOOD_AND_DRINKS: "Food & drinks"
+CATEGORY_HUMANS: "Humans"
+CATEGORY_HUMANOID: "Humanoid"
+CATEGORY_MISCELLANEOUS: "Miscellaneous"
+CATEGORY_MONSTERS: "Monsters"
+CATEGORY_PLANTS: "Plants"
 
 
 # DESCRIPTION: Category selector UI related text.
 CATEGORY_SELECTOR_UI_TITLE: "&3&lCategories"
 
-CATEGORY_SELECTOR_UI_CATEGORY_ALPHABET: "&bAlphabet"
-CATEGORY_SELECTOR_UI_CATEGORY_ANIMALS: "&bAnimals"
-CATEGORY_SELECTOR_UI_CATEGORY_BLOCKS: "&bBlocks"
-CATEGORY_SELECTOR_UI_CATEGORY_DECORATION: "&bDecoration"
-CATEGORY_SELECTOR_UI_CATEGORY_FOOD_AND_DRINKS: "&bFood & drinks"
-CATEGORY_SELECTOR_UI_CATEGORY_HUMANS: "&bHumans"
-CATEGORY_SELECTOR_UI_CATEGORY_HUMANOID: "&bHumanoid"
-CATEGORY_SELECTOR_UI_CATEGORY_MISCELLANEOUS: "&bMiscellaneous"
-CATEGORY_SELECTOR_UI_CATEGORY_MONSTERS: "&bMonsters"
-CATEGORY_SELECTOR_UI_CATEGORY_PLANTS: "&bPlants"
+CATEGORY_TITLE: "&b{CATEGORY}"
 
 CATEGORY_SELECTOR_UI_SEARCH: "&a&lSearch"
 CATEGORY_SELECTOR_UI_SEARCH_LORE: "&7Click here to search for a head."

@@ -1,5 +1,7 @@
 package nl.tabuu.headz.data;
 
+import nl.tabuu.headz.HeadZ;
+
 public enum HeadCategory {
     ALPHABET("https://minecraft-heads.com/scripts/api.php?cat=ALPHABET&tags=true"),
     ANIMALS("https://minecraft-heads.com/scripts/api.php?cat=ANIMALS&tags=true"),
@@ -12,7 +14,7 @@ public enum HeadCategory {
     MONSTERS("https://minecraft-heads.com/scripts/api.php?cat=MONSTERS&tags=true"),
     PLANTS("https://minecraft-heads.com/scripts/api.php?cat=PLANTS&tags=true");
 
-    private String _url;
+    private final String _url;
 
     HeadCategory(String url){
         _url = url;
@@ -20,5 +22,10 @@ public enum HeadCategory {
 
     public String getURL(){
         return _url;
+    }
+
+    @Override
+    public String toString() {
+        return HeadZ.getInstance().getLocale().translate("CATEGORY_" + name());
     }
 }

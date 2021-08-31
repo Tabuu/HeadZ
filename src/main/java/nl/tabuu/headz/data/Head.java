@@ -97,9 +97,22 @@ public class Head implements ISerializable<IDataHolder> {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Head head = (Head) o;
+        return _name.equals(head._name) && _textureValue.equals(head._textureValue) && _tags.equals(head._tags) && _category == head._category;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_name, _textureValue, _tags, _category);
+    }
+
+    @Override
     public IDataHolder serialize(IDataHolder data) {
         data.set("Name", _name);
-        data.set("Category", _category, HeadCategory::toString);
+        data.set("Category", _category, HeadCategory::name);
         data.set("TextureValue", _textureValue);
         data.setStringList("Tags", new ArrayList<>(_tags));
         return data;

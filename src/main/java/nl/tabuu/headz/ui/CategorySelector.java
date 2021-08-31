@@ -30,7 +30,7 @@ public class CategorySelector extends InventoryFormUI {
     public CategorySelector() {
         super("", InventorySize.FIVE_ROWS);
 
-        _local = HeadZ.getInstance().getLocal();
+        _local = HeadZ.getInstance().getLocale();
         _config = HeadZ.getInstance().getConfiguration();
 
         setTitle(_local.translate("CATEGORY_SELECTOR_UI_TITLE"));
@@ -68,7 +68,7 @@ public class CategorySelector extends InventoryFormUI {
         for (HeadCategory category : HeadCategory.values()) {
             XMaterial material = _config.get("Category." + category.name() + ".DisplayItem", XMaterial::valueOf, XMaterial.BARRIER);
             ItemBuilder displayItem = new ItemBuilder(material)
-                    .setDisplayName(_local.translate("CATEGORY_SELECTOR_UI_CATEGORY_" + category.name()));
+                    .setDisplayName(_local.translate("CATEGORY_TITLE", "{CATEGORY}", category));
 
             Style style = new Style(displayItem.build(), XMaterial.AIR.parseItem());
             Button button = new Button(style, p -> selectCategory(p, category));

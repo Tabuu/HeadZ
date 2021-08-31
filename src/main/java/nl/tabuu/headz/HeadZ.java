@@ -1,6 +1,6 @@
 package nl.tabuu.headz;
 
-import nl.tabuu.headz.commands.HeadZCommand;
+import nl.tabuu.headz.command.HeadZCommand;
 import nl.tabuu.headz.data.HeadDatabase;
 import nl.tabuu.headz.metric.Metrics;
 import nl.tabuu.tabuucore.configuration.IConfiguration;
@@ -30,7 +30,7 @@ public class HeadZ extends TabuuCorePlugin {
 
         _database = load();
 
-        getCommand("headz").setExecutor(new HeadZCommand());
+        registerExecutors(new HeadZCommand());
 
         new Metrics(this, 7202);
         getInstance().getLogger().info("HeadZ is now enabled.");
@@ -55,7 +55,7 @@ public class HeadZ extends TabuuCorePlugin {
         return _data.getSerializable("", HeadDatabase.class, (Supplier<HeadDatabase>) HeadDatabase::new);
     }
 
-    public Dictionary getLocal(){
+    public Dictionary getLocale(){
         return _local;
     }
 

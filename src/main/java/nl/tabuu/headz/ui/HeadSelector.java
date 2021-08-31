@@ -34,7 +34,7 @@ public class HeadSelector extends InventoryFormUI {
     public HeadSelector(List<Head> heads) {
         super("Heads (" + heads.size() + "/" + HeadZ.getInstance().getDatabase().getHeads().size() + ")", InventorySize.SIX_ROWS);
 
-        _local = HeadZ.getInstance().getLocal();
+        _local = HeadZ.getInstance().getLocale();
         _heads = heads;
         _category = null;
 
